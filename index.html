@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Template • TodoMVC</title>
+		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
+		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
+		<!-- CSS overrides - remove if you don't need it -->
+		<link rel="stylesheet" href="css/app.css">
+	</head>
+	<body>
+		<section class="todoapp" id="todoapp">
+			<header class="header">
+				<h1>todos</h1>
+				<!-- 添加任务， -->
+				<input 
+				@keyup.enter="addItem" 
+				class="new-todo" placeholder="What needs to be done?" v-app-focus>
+			</header>
+			<!-- This section should be hidden by default and shown when there are todos -->
+			<!-- items.length 当值为0时，表示false，则不显示 -->
+			<!-- template元素，页面渲染之后这个template元素就不会有
+			，需要使用 v-if 与 template搭配，如果使用v-show是不行的 -->
+			
+			<template v-if="items.length">
+				<section class="main" >
+					<input v-model="toggleAll" id="toggle-all" class="toggle-all" type="checkbox">
+					<label for="toggle-all">Mark all as complete</label>
+					<ul class="todo-list">
+						<!-- These are here just to show the structure of the list items -->
+						<!-- List items should get the class `editing` when editing and `completed` 
+							when marked as completed -->
+						<li v-for="(item, index) in filterItems" :class="{completed: item.completed, editing: item === currentItem}">
+							<div class="view">
+								<input class="toggle" type="checkbox" v-model="item.completed">
+								<label @dblclick="toEdit(item)">{{item.content}}</label>
+								<button class="destroy" :value="item.id" @click="removeItem(index)"></button>
+							</div>
+							<input  v-todo-focus="item === currentItem" @keyup.enter="finishEdit(item, index, $event)" @blur="finishEdit(item, index, $event)"
+							 @keyup.esc="cancelEdit" class="edit" :value="item.content">
+						</li>
+					</ul>
+				</section>
+				<!-- This footer should hidden by default and shown when there are todos -->
+				<!-- items.length 当值为0时，表示false，则不显示 -->
+				<footer class="footer"  >
+					<!-- This should be `0 items left` by default -->
+					<span class="todo-count"><strong>{{remaining}}</strong> item{{ remaining === 1 ? '' : 's' }} left</span>
+					<!-- Remove this if you don't implement routing -->
+					<ul class="filters">
+						<li>
+							<a :class="{selected: filterStatus === 'all'}" href="#/">All</a>
+						</li>
+						<li>
+							<a :class="{selected: filterStatus === 'active'}" href="#/active">Active</a>
+						</li>
+						<li>
+							<a :class="{selected: filterStatus === 'completed'}" href="#/completed">Completed</a>
+						</li>
+					</ul>
+					<!-- Hidden if no completed items are left ↓ -->
+
+					<!-- 当总任务数 大于 未完成任务数量 ，则显示下面按钮 -->
+					<button v-show="items.length > remaining"
+					@click="removeCompleted" class="clear-completed">Clear completed</button>
+				</footer>
+			</template>
+		</section>
+		<footer class="info">
+			<p>Double-click to edit a todo</p>
+			<!-- Remove the below line ↓ -->
+			<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+			<!-- Change this out with your name and url ↓ -->
+			<p>Created by <a href="http://todomvc.com">you</a></p>
+			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+		</footer>
+		<!-- Scripts here. Don't remove ↓ -->
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+		<script src="node_modules/todomvc-common/base.js"></script>
+		<script src="js/app.js"></script>
+	</body>
+</html>
